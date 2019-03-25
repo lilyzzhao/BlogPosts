@@ -1,2 +1,2 @@
 # BlogPosts
-Code repository for That Darn Data blog
+This is the code repository for the That Darn Data blog.

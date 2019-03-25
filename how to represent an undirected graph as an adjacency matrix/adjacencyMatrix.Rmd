@@ -98,7 +98,7 @@ To recap:
   + each loop in an undirected graph is represented by a 2  
   + adjacency matrices can account for multi-edges  
 
-To download an R notebook containing this lecture and all code, click [here.](https://github.com)
+To download an R notebook containing this lecture and all code, click [here.](https://github.com/thatdarndata/BlogPosts/blob/master/how%20to%20represent%20an%20undirected%20graph%20as%20an%20adjacency%20matrix/adjacencyMatrix.Rmd)
 
 
 

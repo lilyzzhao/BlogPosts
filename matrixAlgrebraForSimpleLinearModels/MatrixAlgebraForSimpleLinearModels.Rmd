@@ -1,0 +1,34 @@
+---
+title: "Matrix Algebra For Simple Linear Models"
+output: html_notebook
+---
+
+Linear regression is a fundamental statistics and machine learning technique. *Yes*, you read that right. Linear regression falls under 'machine learning.' So get on your fancy pants, we're about to do some smart shit!
+
+Simple linear regression easily expands to multiple linear regression, generalized linear models, hierarchical models, the list goes on. Because it's so fundamental to our understanding of more complicated models, 
+you'll want to know it inside and out. But to really understand how it generalizes to other models, we're going to need to learn about the matrix algebra that's going on under the hood. *Ugh, matrices again?* Yes, you can NEVER escape them, MWAHAHA!!! So, let's lift up the hood and take a look. We'll start by simulating a toy example for us to work with.
+
+```{r}
+# Load libraries.
+library(plotly)
+```
+
+```{r}
+# Simulated a vector representing ages between 15 and 60.
+age <- seq(15, 60, by = 1)
+# Simualate error to go along with our linear model. 
+error <- rnorm(46, 0, 1)
+# Simulate a linear model for the number of cats as a function of age.
+cats = .2 * age + 4 + error
+# Combine age and cats into a dataframe. 
+catsDF <- data.frame(cats, age)
+# Subset the data to 10 data points for easy matrix representation. 
+catsData <- sample_n(catsDF, 10)
+
+plot(catsData)
+plot_ly(data = catsData, x = ~age, y = ~cats)
+```
+
+
+
+

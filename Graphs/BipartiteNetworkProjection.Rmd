@@ -9,7 +9,7 @@ output:
 library(igraph)
 library(visNetwork)
 ```
-
+Often times, we may be interested in how frequently two things occur together. 
 
 A bipartite network is a graphical representation of the relationships *between* two distinct node classes. For example, if we wanted to examine the connections between actors and the movies they acted in, one class of nodes could represent actors and the other node class could represent the movies they star in. For a bipartite network, an edge can only run between actors and movies, not from movies to movies or actors to actors. The following graph is a representation of a bipartite network from the incident matrix *I*. 
 
@@ -35,7 +35,12 @@ net$nodes$shape <- c(rep("image", 4), rep("circularImage", 3))
 # Plot. 
 visNetwork(nodes = net$nodes, edges = net$edges) %>% 
   visIgraphLayout(layout = "layout_as_bipartite") %>% 
-  visNodes(shapeProperties = list(useBorderWithImage = TRUE)) %>%
+  visNodes(shapeProperties = list(useBorderWithImage = TRUE),
+           color = list(border = "BDBDBD",
+                        background = "BDBDBD",
+                        highlight = "BDBDBD")) %>%
+  visEdges(shadow = TRUE,
+           color = list(color = "BDBDBD", highlight = "3D3D3D")) %>%
   visOptions(highlightNearest = list(enabled = T, hover = T), nodesIdSelection = T)
 ```
 
@@ -55,7 +60,18 @@ projNet <- toVisNetworkData(graph_from_adjacency_matrix(P, weighted = TRUE,
 # Add weights according to edge strength and node size according to diagonals.
 projNet$edges$width <- projNet$edges$weight * 2
 projNet$nodes$size <- diag(P) * 10
-visNetwork(projNet$nodes, projNet$edges)
+# Use images in nodes. 
+projNet$nodes$image <- paste0(pathname, 5:7, ".png")
+projNet$nodes$shape <- "circularImage"
+
+# Plot.
+visNetwork(nodes = projNet$nodes, edges = projNet$edges) %>% 
+  visNodes(shapeProperties = list(useBorderWithImage = TRUE),
+           color = list(border = "BDBDBD",
+                        background = "BDBDBD",
+                        highlight = "BDBDBD")) %>%
+  visEdges(color = list(color = "BDBDBD", highlight = "3D3D3D")) 
+
 ```
 
 

@@ -5,11 +5,6 @@ output:
     df_print: paged
 ---
 
-```{r, warning=FALSE, message=FALSE}
-library(igraph)
-library(visNetwork)
-```
- 
 Back in the day, way before IMDb existed (How did we live?), people used to play movie trivia games. The most famous of these games is known as 6 degrees of Kevin Bacon. If you're unfamiliar, it's a game where you try to find the shortest connection between any actor and Kevin Bacon. Common side effects include singing Footloose and shouting, "You can't handle the truth!!!" 
 
 Insert Kevin Bacon dancing
@@ -20,10 +15,14 @@ But let's say you wanted to get *real* serious about this game. You don't want t
 
 A bipartite network is a graphical representation of the relationships, or edges, *between* two different node types. To examine the connections between actors and the movies they acted in, one class of nodes will represent actors and the other node class will represent the movies they star in. For a bipartite network, an edge can only run between actors and movies, not from movies to movies or actors to actors. Let's generate a graph to show a bipartite network from the incident matrix *I*. Each row in *I* represents an actor and each column represents a movie. 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
+
+library(igraph)
+library(visNetwork)
+
 # Incident matrix to represent bipartite graph.
 # Columns are actresses and rows are movies. 
-# A 1 represents the actress being in the movie and a 0 that they weren't.
+# 1: actress is in movie; 0: not in movie.
 I <- matrix(c(1, 1, 0, 0, 0,
               1, 1, 1, 0, 0,
               0, 0, 1, 1, 0,
@@ -31,8 +30,10 @@ I <- matrix(c(1, 1, 0, 0, 0,
        nrow = 5)
 
 # Name distinct node classes. 
-colnames(I) <- c("Queen Latifah", "Jada \n Pinkett Smith", "Mila Kunis", "Kristen Bell")
-rownames(I) <- c("Set It Off", "Girls Trip", "Bad Moms", "Forgetting \n Sarah Marshall", "Frozen")
+colnames(I) <- c("Queen Latifah", "Jada \n Pinkett Smith", 
+                 "Mila Kunis", "Kristen Bell")
+rownames(I) <- c("Set It Off", "Girls Trip", "Bad Moms", 
+                 "Forgetting \n Sarah Marshall", "Frozen")
 
 # Converting incident matrix to visnetwork object.
 net <- toVisNetworkData(graph_from_incidence_matrix(I))
@@ -51,7 +52,8 @@ visNetwork(nodes = net$nodes, edges = net$edges) %>%
                         highlight = "BDBDBD")) %>%
   visEdges(shadow = TRUE,
            color = list(color = "BDBDBD", highlight = "3D3D3D")) %>%
-  visOptions(highlightNearest = list(enabled = T, hover = T), nodesIdSelection = T)
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
 ```
 
 Now, to see the relationships *within* a node class we can use the one-mode projection of the bipartite network. For instance, this will allow us to visualize how many movies Jada Pinkett Smith and Mila Kunis have appeared in together. In a one-mode projection, the two actor nodes will have an edge connecting them if they star in one or more movies together. Mathematically, this can be represented by the matrix, $P$, where $P = I^TI$.

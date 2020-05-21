@@ -13,12 +13,13 @@ Let's look at an example with the incredible Milla Jovovich: Milla was in Zoolan
 
 But let's say you wanted to get *real* serious about this game. You don't want to guess at the shortest connection, you need to know it. Well, if you could construct a network of all movies and all the actors who starred in them, then you could find all possible shortest paths between two actors. Let's give this a try with a very small network of some very talented women. We'll start by creating a bipartite network of movie/actor relationships, then use the one-mode projection of the bipartite network to visualize the direct connections between the actors.   
 
-A bipartite network is a graphical representation of the relationships, or edges, *between* two different node types. To examine the connections between actors and the movies they acted in, one class of nodes will represent actors and the other node class will represent the movies they star in. For a bipartite network, an edge can only run between actors and movies, not from movies to movies or actors to actors. Let's generate a graph to show a bipartite network from the incident matrix *I*. Each row in *I* represents an actor and each column represents a movie. 
+A bipartite network is a graphical representation of the relationships, or edges, *between* two different node types. To examine the connections between actors and the movies they acted in, one class of nodes will represent actors and the other node class will represent the movies they star in. For a bipartite network, an edge can only run between actors and movies, not from movies to movies or actors to actors. Let's generate a graph to show a bipartite network from the incident matrix *I*. Each row in *I* represents a movie and each column represents an actor. Feel free to move the nodes around by clicking and dragging!
 
 ```{r, warning=FALSE, message=FALSE}
 
 library(igraph)
 library(visNetwork)
+library(htmlwidgets)
 
 # Incident matrix to represent bipartite graph.
 # Columns are actresses and rows are movies. 
@@ -35,16 +36,16 @@ colnames(I) <- c("Queen Latifah", "Jada \n Pinkett Smith",
 rownames(I) <- c("Set It Off", "Girls Trip", "Bad Moms", 
                  "Forgetting \n Sarah Marshall", "Frozen")
 
-# Converting incident matrix to visnetwork object.
+# Converting incident matrix to visNetwork object.
 net <- toVisNetworkData(graph_from_incidence_matrix(I))
 
 # Use images in nodes. 
-pathname <- "https://raw.githubusercontent.com/thatdarndata/BlogPosts/master/Graphs/Pics/"
+pathname <- "https://raw.githubusercontent.com/thatdarndata/BlogPosts/master/SixDegrees/Pics/"
 net$nodes$image <- paste0(pathname, 0:8, ".png")
 net$nodes$shape <- c(rep("image", 5), rep("circularImage", 4))
 
 # Plot. 
-visNetwork(nodes = net$nodes, edges = net$edges) %>% 
+(bipartite <- visNetwork(nodes = net$nodes, edges = net$edges) %>% 
   visIgraphLayout(layout = "layout_as_bipartite") %>% 
   visNodes(shapeProperties = list(useBorderWithImage = TRUE),
            color = list(border = "BDBDBD",
@@ -53,7 +54,9 @@ visNetwork(nodes = net$nodes, edges = net$edges) %>%
   visEdges(shadow = TRUE,
            color = list(color = "BDBDBD", highlight = "3D3D3D")) %>%
   visOptions(highlightNearest = list(enabled = T, hover = T), 
-             nodesIdSelection = T)
+             nodesIdSelection = T))
+
+saveWidget(bipartite, "bipartiteActors.html")
 ```
 
 Now, to see the relationships *within* a node class we can use the one-mode projection of the bipartite network. For instance, this will allow us to visualize how many movies Jada Pinkett Smith and Mila Kunis have appeared in together. In a one-mode projection, the two actor nodes will have an edge connecting them if they star in one or more movies together. Mathematically, this can be represented by the matrix, $P$, where $P = I^TI$.
@@ -76,13 +79,14 @@ projNet$nodes$image <- paste0(pathname, 5:8, ".png")
 projNet$nodes$shape <- "circularImage"
 
 # Plot.
-visNetwork(nodes = projNet$nodes, edges = projNet$edges) %>% 
+(proj <- visNetwork(nodes = projNet$nodes, edges = projNet$edges) %>% 
   visNodes(shapeProperties = list(useBorderWithImage = TRUE),
            color = list(border = "BDBDBD",
                         background = "BDBDBD",
                         highlight = "BDBDBD")) %>%
-  visEdges(color = list(color = "BDBDBD", highlight = "3D3D3D")) 
+  visEdges(color = list(color = "BDBDBD", highlight = "3D3D3D")))
 
+saveWidget(proj, "actorProjection.html")
 ```
 
 We can see from the graph that Jada and Kristen starred in more movies than Mila and Queen Latifah (considering the bipartite network only, not their actual filmography). We can also see that Queen Latifah has only starred in a movie with Jada but not with Kristen or Mila. Perhaps a Bad Moms cameo for Girls Trip 2 could fix that?! 

@@ -5,7 +5,7 @@ output:
     df_print: paged
 ---
 
-Co-occurrence networks are a graphical representation of how frequently variables appear together. They're commonly used in ecology and text mining, where co-occurrence measures how frequently two species are seen together within a sampling site or how frequently two words are present in a single document, respectively. A co-occurrence network allows us to examine several pairs of co-occurring variables simulataneously. To construct a co-occurrence network, each variable is represented by a node, or point. An edge, or link, connecting two nodes represents the co-occurrence between those two variables. 
+Co-occurrence networks are a graphical representation of how frequently variables appear together. They're commonly used in ecology and text mining, where co-occurrence measures how frequently two species are seen together within a sampling site or how frequently two words are present in a single document, respectively. A co-occurrence network allows us to examine several pairs of co-occurring variables simultaneously. To construct a co-occurrence network, each variable is represented by a node, or point. An edge, or link, connecting two nodes represents the co-occurrence between those two variables. 
 
 Here, we'll look at how to construct co-occurrence networks in R using the 'cooccur' and 'visNetwork' packages. In this example, an edge will represent only co-occurrences that are higher or lower than would be expected by chance using a probabilistic model (Veech, 2013). We'll start with 'cooccur' to calculate statistically significant pairwise co-occurrences. We'll then feed those results into 'visNetwork' for a network visualization of species co-occurrence. Ready Freddy?
 
@@ -22,7 +22,7 @@ data(finches)
 finches[1:5, 1:5]
 ```
 
-## Co-occurence analysis
+## Co-occurrence analysis
 
 Using the probabilistic model of co-occurrence (Veech, 2013), the **cooccur()** function will calculate the p-values associated with pairwise co-occurrences and return a list of class 'cooccur'. Printing this class returns only the significant interactions. We'll store the significant interactions to create our edge list for visNetwork.   
 
@@ -45,7 +45,7 @@ Columns p_lt and p_gt give us our p-values. If p_lt < 0.05, then the species pai
 
 ## Network visualization
 
-Now's the fun stuff! We'll plot our co-occurrence networks using 'visNetwork.' 'visNetwork' creates interactive network visualizations in R. The **visNetwork()** function takes two arguments: 1) a data frame describing the nodes in the network, and 2) a data frame describing the edges in the network. We'll start with the nodes data frame. At a minimum, the nodes data frame needs an id column to identify each node. We'll set our ids to match the numeric labels returned with cooccur (1-13). In addition, we'll label our nodes according by species name, specify a color, and add shadow for some depth.     
+Now's the fun stuff! We'll plot our co-occurrence networks using 'visNetwork.' 'visNetwork' creates interactive network visualizations in R. The **visNetwork()** function takes two arguments: 1) a data frame describing the nodes in the network, and 2) a data frame describing the edges in the network. We'll start with the nodes data frame. At a minimum, the nodes data frame needs an id column to identify each node. We'll set our ids to match the numeric labels returned with cooccur (1-13). In addition, we'll label our nodes by species name, specify a color, and add shadow for some depth.     
 
 ```{r}
 # Create a data frame of the nodes in the network. 
@@ -55,7 +55,7 @@ nodes <- data.frame(id = 1:nrow(finches),
                     shadow = TRUE)  
 ```
 
-The edges data frame needs at least two columns, 'from' and 'to', which should correspond with the id's from the nodes data frame. Since we used cooccur's numeric labels as our ids, we can use sp1 as our 'from' column and 'sp2' as our to column. (Since our network isn't directed, we could reverse these and it wouldn't matter.) We'll then add some color so our edges match our nodes such that we'll have a lighter color for co-occurrences that occur at a lower frequency than expected and a darker color for co-occurrences that occur at a higher frequency. To make the distinction between 'higher' and 'lower' even more obvious, we'll also specify that co-occurrences that are lower than expected have a dashed line. 
+The edges data frame needs at least two columns, 'from' and 'to', which should correspond with the ids from the nodes data frame. Since we used cooccur's numeric labels as our ids, we can use sp1 as our 'from' column and 'sp2' as our to column. (Since our network isn't directed, we could reverse these and it wouldn't matter.) We'll then add some color so our edges match our nodes such that we'll have a lighter color for co-occurrences that occur at a lower frequency than expected and a darker color for co-occurrences that occur at a higher frequency. To make the distinction between 'higher' and 'lower' even more obvious, we'll also specify that co-occurrences that are lower than expected have a dashed line. 
 
 ```{r}
 # Create an edges dataframe from the significant pairwise co-occurrences.
